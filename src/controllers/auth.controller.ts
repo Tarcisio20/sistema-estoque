@@ -17,16 +17,28 @@ export const login: RequestHandler = async (req, res) => {
 
 export const logout: RequestHandler = async (req, res) => {
     const authHeader = req.headers.authorization
-    if(authHeader){
+    if (authHeader) {
         const [_, token] = authHeader.split(' ');
-        if(token){
+        if (token) {
             await userService.logout(token);
         }
     }
     res.json({
         error: null,
-        data :{
-            message : 'Deslogado com sucesso!'
+        data: {
+            message: 'Deslogado com sucesso!'
         }
+    })
+}
+
+export const getMe: RequestHandler = async (req, res) => {
+    if (!req.user) return null
+
+    const user = await userService.getUserByIdPublic(req.user.id);
+    if (!user) throw new AppError('Usuario nao encontrado', 404)
+
+    res.json({
+        error: null,
+        data: user
     })
 }
