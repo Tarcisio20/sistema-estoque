@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import crypto from 'crypto'
 import { AppError } from "../utils/apperror";
 import e from "express";
+import { deleteAvatar } from "./file.service";
 
 export const createUser = async (data: NewUser) => {
     // 1. Verificar se o usuario existe
@@ -46,7 +47,9 @@ export const updateUser = async (id: string, data: Partial<NewUser>) => {
         updateData.password = await hashPassword(data.password)
     }
 
-    // TODO Handler Avatar
+    if (data.avatar && userToUpdate.avatar && data.avatar !== userToUpdate.avatar) {
+        await deleteAvatar(userToUpdate.avatar);
+    }
 
     updateData.updatedAt = new Date();
     const result = await db.update(users).set(updateData).where(eq(users.id, id)).returning();

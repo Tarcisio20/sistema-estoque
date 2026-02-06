@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as useController from '../controllers/user.controller'
+import { uploadAvatar } from "../middlewares/upload.middleware";
 
 
 const router = Router()
@@ -13,7 +14,7 @@ router.get('/:id', useController.getUser)
 // DELETE /api/users/:id / Deletar usuario pelo id
 router.delete('/:id', useController.deleteUser)
 // PUT /api/users/:id / Atualizar usuario pelo id
-router.put('/:id', useController.updateUser)
+router.put('/:id', uploadAvatar, useController.updateUser)
 
 
 export default router
